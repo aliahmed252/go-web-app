@@ -83,6 +83,4 @@ jobs:
         git add helm/go-web-app-chart/values.yaml
         git commit -m "Update tag in Helm chart"
         git push
-    - name: some checks
-      run: |
-        kubectl get svc    
+   
