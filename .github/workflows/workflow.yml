@@ -1,0 +1,85 @@
+name: go-web-app ci
+  on:
+    push: 
+      branches:
+        - main
+      paths-igonored:
+        - "README.md"
+        - "helm/**"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Go environment
+        uses: actions/setup-go@v6.3.0
+      
+      - name: build binary file
+        run: go build -o go-web-app
+      
+      - name: test
+        run: go test ./...
+  
+  code-quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v4
+      
+      - name : run golang-lint
+        uses: golangci/golangci-lint-action@v9.2.0
+
+  push:
+    runs-on: ubuntu-latest
+
+    needs: build
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Login to DockerHub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Build and Push action
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/go-web-app:${{github.run_id}}
+
+  update-newtag-in-helm-chart:
+    runs-on: ubuntu-latest
+
+    needs: push
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.TOKEN }} # we use github token to make the action able to (push edits) to values.yaml file
+
+    - name: Update tag in Helm chart
+      run: |
+        sed -i 's/tag: .*/tag: "${{GITHUB_SHA::7}}"/' helm/go-web-app-chart/values.yaml   
+  #sed is a tool inside linux edits texts inside files >> -i:in-place:apply changes on the orignal file (values.yml)
+  #s:substitute (replace) >> any thing after tag: replace it with (github_SHA::7)
+  #helm/go-web-app-chart/values.yaml: where the file located
+    - name: Commit and push changes #to push changes to the repo 
+      run: |
+        git config --global user.email "securevbn999@gmail.com"
+        git config --global user.name "aliahmed252"
+        git add helm/go-web-app-chart/values.yaml
+        git commit -m "Update tag in Helm chart"
+        git push

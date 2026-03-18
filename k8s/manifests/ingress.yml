@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: go-web-app
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: / #this is info to nginx controller any request come to you route it to the go app 
+    # (/): this means root the go app 
+spec:
+  ingressClassName: nginx #define the type of the ingress. this (nginx ingress): the one who execute the rules
+  rules:
+  - host: go-web-app.local #ingress will open the app only if the client enter this domain exactly
+    http:
+      paths: 
+      - pathType: Prefix 
+        path: / #All backends will start with / 
+        backend: #this is the final destination
+          service:
+            name: go-web-app-service #the traffic will go to this service on port 80 
+            port:
+              number: 80
+# after that service recive the traffic it will forward it to the the container on port 8080
