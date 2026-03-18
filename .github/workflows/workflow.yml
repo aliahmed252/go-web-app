@@ -57,7 +57,7 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/go-web-app:${{GITHUB_SHA::7}}
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/go-web-app:${{ github.sha::7 }}
 
   update-newtag-in-helm-chart:
     runs-on: ubuntu-latest
@@ -72,7 +72,7 @@ jobs:
 
     - name: Update tag in Helm chart
       run: |
-        sed -i 's/tag: .*/tag: "${{GITHUB_SHA::7}}"/' helm/go-web-app-chart/values.yaml   
+        sed -i 's/tag: .*/tag: "${{ github.sha::7 }}"/' helm/go-web-app-chart/values.yaml   
   #sed is a tool inside linux edits texts inside files >> -i:in-place:apply changes on the orignal file (values.yml)
   #s:substitute (replace) >> any thing after tag: replace it with (github_SHA::7)
   #helm/go-web-app-chart/values.yaml: where the file located
