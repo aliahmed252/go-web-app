@@ -1,11 +1,11 @@
 name: go-web-app ci
-  on:
-    push: 
-      branches:
-        - main
-      paths-igonored:
-        - "README.md"
-        - "helm/**"
+on:
+  push: 
+    branches:
+      - main
+    paths-igonore: #that say if i changed in doc or helm files : this will not trigger the workflow and start it  
+      - "README.md"
+      - "helm/**"
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -57,7 +57,7 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/go-web-app:${{github.run_id}}
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/go-web-app:${{GITHUB_SHA::7}}
 
   update-newtag-in-helm-chart:
     runs-on: ubuntu-latest
