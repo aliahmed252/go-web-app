@@ -11,7 +11,7 @@ image:
   # This sets the pull policy for images.
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "1e1e7646b8e5fbde9867dcd0bb81556d11757f9f"
+  tag: "db7536084703d3422a1f53b1f12d68b9663735c7"
 
 # This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
