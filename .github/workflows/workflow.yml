@@ -74,7 +74,7 @@ jobs:
       run: |
         sed -i 's/tag: .*/tag: "${{ github.sha }}"/' helm/go-web-app-chart/values.yaml   
   #sed is a tool inside linux edits texts inside files >> -i:in-place:apply changes on the orignal file (values.yml)
-  #s:substitute (replace) >> any thing after tag: replace it with (github_SHA::7)
+  #s:substitute (replace) >> any  thing after tag: replace it with (github_SHA::7)
   #helm/go-web-app-chart/values.yaml: where the file located
     - name: Commit and push changes #to push changes to the repo 
       run: |
