@@ -67,8 +67,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.TOKEN }} # we use github token to make the action able to (push edits) to values.yaml file
+     # with:
+      #  token: ${{ secrets.TOKEN }} # we use github token to make the action able to (push edits) to values.yaml file
 
     - name: Update tag in Helm chart
       run: |
